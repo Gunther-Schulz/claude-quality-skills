@@ -1,6 +1,6 @@
-# claude-skills
+# claude-auto-skills
 
-Reusable quality checklists for Claude Code, delivered as slash commands with an optional smart classifier hook.
+Automatic quality checklists for Claude Code. A Haiku-based classifier detects what kind of task each prompt involves and loads the relevant skill checklist before Claude starts working.
 
 ## Skills
 
@@ -13,22 +13,22 @@ Reusable quality checklists for Claude Code, delivered as slash commands with an
 ## Installation
 
 ```bash
-git clone https://github.com/Gunther-Schulz/claude-skills.git
-cd claude-skills
+git clone https://github.com/Gunther-Schulz/claude-auto-skills.git
+cd claude-auto-skills
 ./install.sh
 ```
 
 This installs:
 - **Scripts** to `~/.local/bin/` (classifier and debug logger)
 - **Commands** symlinked to `~/.claude/commands/` (slash commands)
-- **Config** to `~/.config/claude-skills/config.sh`
-- **State/logs** to `~/.local/state/claude-skills/`
+- **Config** to `~/.config/claude-auto-skills/config.sh`
+- **State/logs** to `~/.local/state/claude-auto-skills/`
 
 ### Classifier hook
 
 The classifier hook automatically detects what kind of task a user prompt involves and reminds Claude to run the relevant skill before proceeding. It uses `claude -p` with Haiku for fast, cheap classification on every prompt.
 
-The installer prints the hook config snippet to add to `hooks.UserPromptSubmit` in `~/.claude/settings.json`. Logs cost, duration, and token counts per classification to `~/.local/state/claude-skills/classifier.log`.
+The installer prints the hook config snippet to add to `hooks.UserPromptSubmit` in `~/.claude/settings.json`. Logs cost, duration, and token counts per classification to `~/.local/state/claude-auto-skills/classifier.log`.
 
 ## Directory layout
 
@@ -36,14 +36,14 @@ Follows [XDG Base Directory Specification](https://specifications.freedesktop.or
 
 | Artifact | Location | Override env var |
 |----------|----------|------------------|
-| Config | `~/.config/claude-skills/config.sh` | `CLAUDE_SKILLS_CONFIG` |
-| Logs | `~/.local/state/claude-skills/` | `CLAUDE_SKILLS_STATE` |
+| Config | `~/.config/claude-auto-skills/config.sh` | `CLAUDE_SKILLS_CONFIG` |
+| Logs | `~/.local/state/claude-auto-skills/` | `CLAUDE_SKILLS_STATE` |
 | Scripts | `~/.local/bin/` | — |
 | Commands | `~/.claude/commands/` | — |
 
 ## Configuration
 
-Edit `~/.config/claude-skills/config.sh`:
+Edit `~/.config/claude-auto-skills/config.sh`:
 
 ```bash
 # Classifier model (default: claude-haiku-4-5-20251001)
@@ -59,7 +59,7 @@ CLASSIFIER_MAX_BUDGET=""
 ## Updating
 
 ```bash
-cd claude-skills
+cd claude-auto-skills
 git pull
 ./install.sh
 ```
@@ -91,7 +91,7 @@ Challenge proposals before agreeing — state concerns, alternatives, or unstate
 
 ## Roadmap
 
-- **Classifier accuracy tuning**: Haiku sometimes over-classifies (triggers all three skills), mis-classifies (proposal vs code task), or confuses hook JSON input for conversational prompts. Refine the classifier prompt based on log analysis.
+- **Classifier accuracy tuning**: Output filter rejects hallucinated responses. Transcript context helps disambiguate short prompts ("yes" after "shall I implement?" → code-quality). 89% accuracy on test battery. Ongoing: refine based on `classifier.log` analysis.
 - **CLIPPY integration**: Add a fourth classifier category for substantial feature/refactoring tasks that recommends `/clippy-composer` (from [coding-clippy](https://github.com/Gunther-Schulz/coding-clippy)) instead of `/code-quality`. Waiting on CLIPPY skills stabilization.
 - **Enrich /code-quality from CLIPPY patterns**: Extract useful lightweight checks from CLIPPY's quality checkpoints (e.g., search for existing patterns before writing, duplication checks) without importing the full protocol.
 

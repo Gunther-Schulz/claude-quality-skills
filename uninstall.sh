@@ -11,7 +11,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m'
 
-echo "Uninstalling claude-skills..."
+echo "Uninstalling claude-auto-skills..."
 echo ""
 
 # --- Scripts ---
