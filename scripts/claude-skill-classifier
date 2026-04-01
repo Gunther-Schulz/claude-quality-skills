@@ -77,6 +77,9 @@ fi
 export LOG_FILE
 export CLASSIFIER_PROMPT="$PROMPT"
 
+# Debug: log full diagnostic info for tracing
+echo "$(date -Is) | DEBUG | transcript_path=${TRANSCRIPT_PATH:-(empty)} | context_len=${#CONTEXT} | context_preview=${CONTEXT:0:60} | prompt_len=${#PROMPT} | prompt=${PROMPT:0:60}" >> "$LOG_FILE"
+
 # Build classifier input with context
 if [ -n "$CONTEXT" ]; then
     CLASSIFIER_INPUT="[Last assistant message (truncated)]:
@@ -118,10 +121,21 @@ DO NOT MATCH (output nothing for these):
 
 Use the assistant context (if provided) to disambiguate short messages. "yes" after "shall I implement?" is code-quality. "yes" after "want another design round?" is no match.' 2>/dev/null || true)
 
-# Parse JSON and output result + log in one step
+# Check if claude -p failed entirely
+if [ -z "$RAW" ]; then
+    echo "$(date -Is) | ERROR | claude -p returned empty | prompt=${PROMPT:0:60}" >> "$LOG_FILE"
+    exit 0
+fi
+
+# Parse JSON, log, filter, and output
 echo "$RAW" | python3 -c "
 import sys, json, os
 from datetime import datetime
+
+log_file = os.environ.get('LOG_FILE', '')
+prompt = os.environ.get('CLASSIFIER_PROMPT', '')[:80]
+ts = datetime.now().astimezone().isoformat(timespec='seconds')
+
 try:
     data = json.load(sys.stdin)
     result = data.get('result', '').strip()
@@ -130,16 +144,10 @@ try:
     total_ms = data.get('duration_ms', 0)
     tokens_in = data.get('usage', {}).get('input_tokens', 0)
     tokens_out = data.get('usage', {}).get('output_tokens', 0)
-except:
-    result, cost, api_ms, total_ms, tokens_in, tokens_out = '', 0, 0, 0, 0, 0
-
-# Log
-log_file = os.environ.get('LOG_FILE', '')
-prompt = os.environ.get('CLASSIFIER_PROMPT', '')[:80]
-ts = datetime.now().astimezone().isoformat(timespec='seconds')
-label = result.replace(chr(10), ' | ') if result else 'NO_MATCH'
-with open(log_file, 'a') as f:
-    f.write(f'{ts} | {label} | \${cost:.6f} {api_ms}ms/{total_ms}ms {tokens_in}in+{tokens_out}out | {prompt}\n')
+except Exception as e:
+    with open(log_file, 'a') as f:
+        f.write(f'{ts} | ERROR | json parse failed: {e} | prompt={prompt}\n')
+    sys.exit(0)
 
 # Filter: only allow expected lines (reject hallucinated responses)
 VALID = {
@@ -147,18 +155,25 @@ VALID = {
     'Run /critical-thinking before proceeding.',
     'Run /critical-evaluation before responding.',
 }
+filtered = []
 if result:
-    lines = []
     for l in result.splitlines():
-        # Strip list markers, arrows, and category prefixes Haiku sometimes adds
         cleaned = l.strip().lstrip('-*•→ ').strip()
         for prefix in ('code-quality: ', 'critical-thinking: ', 'critical-evaluation: '):
             if cleaned.lower().startswith(prefix):
                 cleaned = cleaned[len(prefix):].strip()
         if cleaned in VALID:
-            lines.append(cleaned)
-    if lines:
-        print(chr(10).join(lines))
+            filtered.append(cleaned)
+
+# Log: raw result + filtered result + cost/duration
+raw_label = result.replace(chr(10), ' | ')[:120] if result else 'EMPTY'
+filtered_label = ' | '.join(filtered) if filtered else '(filtered out)'
+with open(log_file, 'a') as f:
+    f.write(f'{ts} | raw={raw_label} | filtered={filtered_label} | \${cost:.6f} {api_ms}ms/{total_ms}ms {tokens_in}in+{tokens_out}out | {prompt}\n')
+
+# Output filtered result to stdout (injected as system-reminder)
+if filtered:
+    print(chr(10).join(filtered))
 " 2>/dev/null
 
 exit 0
