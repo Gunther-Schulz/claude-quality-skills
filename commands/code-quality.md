@@ -2,6 +2,17 @@
 
 Apply these rules to the current task before writing or modifying code.
 
+### Required output markers (user will spot-check these)
+
+Before code, list requirements from the discussion:
+- `📋 Requirements: [requirement] — [met/simplified/skipped]` for each
+
+When modifying shared interfaces, list consumers:
+- `📋 Consumers: [file:line] — [status: ok/needs change/N/A]` for each
+
+When checking consistency after changes:
+- `📋 Consistency: [consumer/dependency] — [consistent/updated/N/A]` for each
+
 ### Before writing code
 - Re-read the preceding discussion. List the requirements, constraints, and quality expectations it established.
 - Check each requirement off in the implementation. If any is being simplified or skipped, state this BEFORE coding.

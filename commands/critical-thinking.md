@@ -2,6 +2,16 @@
 
 Apply these rules to the current task when investigating, debugging, or making claims.
 
+### Required output markers (user will spot-check these)
+
+These markers are already defined in the rules below — this section is a summary:
+- `✅ Verified: <supporting computation/data>` — after every verified claim
+- `⚠️ Unverified: <why>` — after every unverified claim
+- `🔍 Assumptions from rejected hypothesis: [list]` — before proposing next hypothesis
+- `🔍 Backward trace: [symptom] ← ... ← [origin]` — before proposing a fix
+
+A claim without a ✅/⚠️ tag, a fix without a backward trace, or a new hypothesis without an assumption list is a checklist violation.
+
 ### Claim verification
 - All technical and quantitative claims must be tagged:
   - `✅ Verified: <what computation/data supports this>`
