@@ -1,20 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Configuration (override via ~/.claude/skill-classifier.conf)
-CLASSIFIER_MODEL="claude-haiku-4-5-20251001"
-CLASSIFIER_EFFORT="low"
-CLASSIFIER_MAX_BUDGET=""  # e.g. "0.01" for 1 cent cap
-LOG_FILE="${HOME}/.claude/skill-classifier.log"
-
-CONF_FILE="${HOME}/.claude/skill-classifier.conf"
-[ -f "$CONF_FILE" ] && source "$CONF_FILE"
-
 # Recursion guard: claude -p triggers UserPromptSubmit hooks too
 if [ "${CLAUDE_SKILL_CLASSIFYING:-}" = "1" ]; then
     exit 0
 fi
 export CLAUDE_SKILL_CLASSIFYING=1
+
+# Paths: env vars > XDG spec > defaults
+CONFIGDIR="${CLAUDE_SKILLS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/claude-skills}"
+STATEDIR="${CLAUDE_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-skills}"
+CONFIGFILE="${CONFIGDIR}/config.sh"
+LOG_FILE="${STATEDIR}/classifier.log"
+
+# --- Defaults (overridden by config.sh) ---
+CLASSIFIER_MODEL="claude-haiku-4-5-20251001"
+CLASSIFIER_EFFORT="low"
+CLASSIFIER_MAX_BUDGET=""
+
+# Source user config
+[ -f "$CONFIGFILE" ] && source "$CONFIGFILE"
+
+# Ensure state dir exists
+mkdir -p "$STATEDIR"
 
 INPUT=$(cat)
 

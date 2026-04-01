@@ -1,0 +1,16 @@
+# claude-skills configuration
+# Installed to: ~/.config/claude-skills/config.sh
+# Override config location with CLAUDE_SKILLS_CONFIG env var
+
+# Classifier model (default: claude-haiku-4-5-20251001)
+#CLASSIFIER_MODEL="claude-haiku-4-5-20251001"
+
+# Effort level for classifier (default: low)
+#CLASSIFIER_EFFORT="low"
+
+# Max budget per classification call in USD (default: no limit)
+#CLASSIFIER_MAX_BUDGET=""
+
+# Override state directory (logs)
+# Default: ${XDG_STATE_HOME:-~/.local/state}/claude-skills
+#CLAUDE_SKILLS_STATE=""

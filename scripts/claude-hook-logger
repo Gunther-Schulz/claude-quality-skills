@@ -2,7 +2,11 @@
 # Logs UserPromptSubmit hook input to a file for debugging
 # Skip logging for classifier's internal claude -p calls
 [ "${CLAUDE_SKILL_CLASSIFYING:-}" = "1" ] && exit 0
-LOG_FILE="${HOME}/.claude/hook-debug.log"
+
+# Paths: env vars > XDG spec > defaults
+STATEDIR="${CLAUDE_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-skills}"
+mkdir -p "$STATEDIR"
+LOG_FILE="${STATEDIR}/hook-debug.log"
 INPUT=$(cat)
 PROMPT=$(echo "$INPUT" | python3 -c "
 import sys, json
