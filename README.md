@@ -91,9 +91,9 @@ Challenge proposals before agreeing — state concerns, alternatives, or unstate
 
 ## Roadmap
 
+- **Classifier accuracy tuning**: Haiku sometimes over-classifies (triggers all three skills), mis-classifies (proposal vs code task), or confuses hook JSON input for conversational prompts. Refine the classifier prompt based on log analysis.
 - **CLIPPY integration**: Add a fourth classifier category for substantial feature/refactoring tasks that recommends `/clippy-composer` (from [coding-clippy](https://github.com/Gunther-Schulz/coding-clippy)) instead of `/code-quality`. Waiting on CLIPPY skills stabilization.
 - **Enrich /code-quality from CLIPPY patterns**: Extract useful lightweight checks from CLIPPY's quality checkpoints (e.g., search for existing patterns before writing, duplication checks) without importing the full protocol.
-- **Classifier accuracy tuning**: Haiku sometimes over-classifies (triggers all three skills) or mis-classifies (proposal vs code task). Refine the classifier prompt based on log analysis.
 
 ## License
 
