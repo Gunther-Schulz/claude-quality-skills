@@ -65,7 +65,7 @@ CLASSIFIER_MAX_BUDGET=""
 If you use [claude-worktime](https://github.com/Gunther-Schulz/claude-worktime), add to `~/.config/claude-worktime/config.sh`:
 
 ```bash
-# Auto-skills status (shows skills:on or skills:off)
+# Auto-skills status (grey label, green "on" / grey "off")
 _skills_conf="${CLAUDE_SKILLS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/claude-skills}/config.sh"
 _skills_enabled="off"
 if [ -f "$_skills_conf" ]; then
@@ -73,7 +73,12 @@ if [ -f "$_skills_conf" ]; then
     source "$_skills_conf" 2>/dev/null
     [ "${CLASSIFIER_ENABLED:-true}" != "true" ] && _skills_enabled="off"
 fi
-GROUP_AUTOSKILLS="auto-skills:${_skills_enabled}"
+_gray=$'\033[38;5;246m'; _green=$'\033[32m'; _reset=$'\033[0m'
+if [ "$_skills_enabled" = "on" ]; then
+    GROUP_AUTOSKILLS="${_gray}auto-skills:${_reset}${_green}on${_reset}"
+else
+    GROUP_AUTOSKILLS="${_gray}auto-skills:off${_reset}"
+fi
 STATUSLINE_3="MODEL RATE_5H RATE_7D CONTEXT AUTOSKILLS"
 ```
 
