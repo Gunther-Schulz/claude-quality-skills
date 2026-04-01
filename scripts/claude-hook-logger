@@ -8,12 +8,18 @@ STATEDIR="${CLAUDE_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-sk
 mkdir -p "$STATEDIR"
 LOG_FILE="${STATEDIR}/hook-debug.log"
 INPUT=$(cat)
-PROMPT=$(echo "$INPUT" | python3 -c "
-import sys, json
+eval "$(echo "$INPUT" | python3 -c "
+import sys, json, shlex
 try:
     data = json.load(sys.stdin)
-    print(data.get('prompt', '')[:80])
+    print(f'PROMPT={shlex.quote(data.get(\"prompt\", \"\")[:80])}')
+    keys = sorted(data.keys())
+    print(f'HOOK_KEYS={shlex.quote(\",\".join(keys))}')
+    has_cost = 'true' if 'total_cost_usd' in str(data) else 'false'
+    print(f'HAS_COST={has_cost}')
 except:
-    print('parse-error')
-" 2>/dev/null)
-echo "$(date -Is) UserPromptSubmit | ${PROMPT}" >> "$LOG_FILE"
+    print('PROMPT=\"parse-error\"')
+    print('HOOK_KEYS=\"\"')
+    print('HAS_COST=false')
+" 2>/dev/null)"
+echo "$(date -Is) UserPromptSubmit | keys=${HOOK_KEYS} | has_cost=${HAS_COST} | ${PROMPT}" >> "$LOG_FILE"
