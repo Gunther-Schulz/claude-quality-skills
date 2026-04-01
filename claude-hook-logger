@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Logs UserPromptSubmit hook input to a file for debugging
+# Skip logging for classifier's internal claude -p calls
+[ "${CLAUDE_SKILL_CLASSIFYING:-}" = "1" ] && exit 0
+LOG_FILE="${HOME}/.claude/hook-debug.log"
+INPUT=$(cat)
+PROMPT=$(echo "$INPUT" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get('prompt', '')[:80])
+except:
+    print('parse-error')
+" 2>/dev/null)
+echo "$(date -Is) UserPromptSubmit | ${PROMPT}" >> "$LOG_FILE"

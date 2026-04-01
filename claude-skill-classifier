@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOG_FILE="${HOME}/.claude/skill-classifier.log"
+
+# Recursion guard: claude -p triggers UserPromptSubmit hooks too
+if [ "${CLAUDE_SKILL_CLASSIFYING:-}" = "1" ]; then
+    exit 0
+fi
+export CLAUDE_SKILL_CLASSIFYING=1
+
+INPUT=$(cat)
+
+# Extract user prompt from hook JSON
+PROMPT=$(echo "$INPUT" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get('prompt', ''))
+except:
+    pass
+" 2>/dev/null)
+
+if [ -z "$PROMPT" ]; then
+    echo "$(date -Is) | NO_INPUT" >> "$LOG_FILE"
+    exit 0
+fi
+
+# Classify using claude CLI with Haiku (JSON output for cost/duration tracking)
+RAW=$(echo "$PROMPT" | claude -p --model claude-haiku-4-5-20251001 --output-format json "Classify this message. Output ONLY the text after the arrow. Nothing else. If none match, output nothing.
+
+code task → Run /code-quality before writing code.
+investigation/debug task → Run /critical-thinking before proceeding.
+proposal/design evaluation → Run /critical-evaluation before responding." 2>/dev/null || true)
+
+# Parse result, cost, and duration from JSON
+eval "$(echo "$RAW" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    result = data.get('result', '').strip()
+    cost = data.get('total_cost_usd', 0)
+    duration_api = data.get('duration_api_ms', 0)
+    duration_total = data.get('duration_ms', 0)
+    tokens_in = data.get('usage', {}).get('input_tokens', 0)
+    tokens_out = data.get('usage', {}).get('output_tokens', 0)
+    # Shell-safe export
+    print(f'RESULT={repr(result)}')
+    print(f'COST={cost:.6f}')
+    print(f'API_MS={duration_api}')
+    print(f'TOTAL_MS={duration_total}')
+    print(f'TOKENS_IN={tokens_in}')
+    print(f'TOKENS_OUT={tokens_out}')
+except:
+    print('RESULT=\"\"')
+    print('COST=0')
+    print('API_MS=0')
+    print('TOTAL_MS=0')
+    print('TOKENS_IN=0')
+    print('TOKENS_OUT=0')
+" 2>/dev/null)"
+
+# Log with cost and duration
+echo "$(date -Is) | ${RESULT:-NO_MATCH} | \$${COST} ${API_MS}ms/${TOTAL_MS}ms ${TOKENS_IN}in+${TOKENS_OUT}out | ${PROMPT:0:80}" >> "$LOG_FILE"
+
+# Output result — plain stdout gets injected as system-reminder
+if [ -n "$RESULT" ]; then
+    echo "$RESULT"
+fi
+
+exit 0
