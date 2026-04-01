@@ -141,9 +141,20 @@ label = result.replace(chr(10), ' | ') if result else 'NO_MATCH'
 with open(log_file, 'a') as f:
     f.write(f'{ts} | {label} | \${cost:.6f} {api_ms}ms/{total_ms}ms {tokens_in}in+{tokens_out}out | {prompt}\n')
 
-# Output result to stdout (injected as system-reminder)
+# Filter: only allow expected lines (reject hallucinated responses)
+VALID = {
+    'Run /code-quality before writing code.',
+    'Run /critical-thinking before proceeding.',
+    'Run /critical-evaluation before responding.',
+}
 if result:
-    print(result)
+    lines = []
+    for l in result.splitlines():
+        cleaned = l.strip().lstrip('-*•→ ').strip()
+        if cleaned in VALID:
+            lines.append(cleaned)
+    if lines:
+        print(chr(10).join(lines))
 " 2>/dev/null
 
 exit 0
