@@ -30,6 +30,11 @@
 # Override the CATEGORIES section entirely (multi-line string)
 #CLASSIFIER_CATEGORIES=""
 
+# Environment variables to set for the claude -p subprocess (comma-separated)
+# Default: CLAUDE_WORKTIME_SKIP_LOG=1 (prevents subprocess sessions from
+# inflating claude-worktime time tracking)
+#CLASSIFIER_ENV="CLAUDE_WORKTIME_SKIP_LOG=1"
+
 # Override state directory (logs)
 # Default: ${XDG_STATE_HOME:-~/.local/state}/claude-auto-skills
 #CLAUDE_AUTO_SKILLS_STATE=""

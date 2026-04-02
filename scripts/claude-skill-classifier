@@ -17,8 +17,6 @@ from pathlib import Path
 if os.environ.get("CLAUDE_AUTO_SKILLS_CLASSIFYING") == "1":
     sys.exit(0)
 os.environ["CLAUDE_AUTO_SKILLS_CLASSIFYING"] = "1"
-# Tell claude-worktime to skip logging for this subprocess
-os.environ["CLAUDE_WORKTIME_SKIP_LOG"] = "1"
 
 # Paths: env vars > XDG spec > defaults
 config_dir = Path(
@@ -43,6 +41,7 @@ config = {
     "CLASSIFIER_LOW_KEYWORDS": "evaluate,investigate,implement,fix,debug,refactor,create,trace,analyze,review,critique,add,write",
     "CLASSIFIER_DO_NOT_MATCH": "",
     "CLASSIFIER_CATEGORIES": "",
+    "CLASSIFIER_ENV": "CLAUDE_WORKTIME_SKIP_LOG=1",
 }
 
 # Source config (parse bash-style KEY=VALUE)
@@ -124,6 +123,14 @@ if context:
     classifier_input = f"[Last assistant message (truncated)]:\n{context}\n\n[User message to classify]:\n{prompt}"
 else:
     classifier_input = f"[User message to classify]:\n{prompt}"
+
+# Apply configured env vars for subprocess (e.g. CLAUDE_WORKTIME_SKIP_LOG=1)
+if config["CLASSIFIER_ENV"]:
+    for pair in config["CLASSIFIER_ENV"].split(","):
+        pair = pair.strip()
+        if "=" in pair:
+            key, _, value = pair.partition("=")
+            os.environ[key.strip()] = value.strip()
 
 # Build claude -p command
 cmd = [
