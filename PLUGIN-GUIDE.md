@@ -1,6 +1,6 @@
 # Creating a Claude Code Plugin
 
-A practical guide based on lessons learned converting [claude-auto-skills](https://github.com/Gunther-Schulz/claude-auto-skills) into a proper Claude Code plugin. Covers the pitfalls the official docs don't mention.
+A practical guide based on lessons learned converting [claude-quality-skills](https://github.com/Gunther-Schulz/claude-quality-skills) into a proper Claude Code plugin. Covers the pitfalls the official docs don't mention.
 
 ## Directory Structure
 

@@ -8,7 +8,7 @@
   },
   "plugins": [
     {
-      "name": "auto-skills",
+      "name": "quality-skills",
       "description": "Quality checklists for Claude Code — code-quality, critical-thinking, critical-evaluation, and skill-design skills auto-discovered based on task context.",
       "source": "./plugin"
     }

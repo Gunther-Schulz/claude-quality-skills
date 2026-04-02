@@ -1,11 +1,11 @@
 {
-  "name": "auto-skills",
+  "name": "quality-skills",
   "version": "1.0.0",
   "description": "Quality checklists for Claude Code — code-quality, critical-thinking, critical-evaluation, and skill-design skills auto-discovered based on task context.",
   "author": {
     "name": "Gunther Schulz"
   },
-  "repository": "https://github.com/Gunther-Schulz/claude-auto-skills",
+  "repository": "https://github.com/Gunther-Schulz/claude-quality-skills",
   "license": "MIT",
   "keywords": ["code-quality", "critical-thinking", "evaluation", "skills", "classifier", "automation"]
 }

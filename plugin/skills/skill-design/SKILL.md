@@ -7,7 +7,7 @@ license: MIT
 
 ## Skill Design Checklist
 
-Apply when writing, modifying, or reviewing any skill, rule, or checklist — not just auto-skills.
+Apply when writing, modifying, or reviewing any skill, rule, or checklist — not just quality-skills.
 
 ### Required output markers (user will spot-check these)
 
