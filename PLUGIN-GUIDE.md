@@ -201,6 +201,27 @@ claude --plugin-dir ./plugin
 
 This loads the plugin directly from the local directory. Use `/reload-plugins` to pick up changes without restarting.
 
+## When NOT to Use a Plugin
+
+Not every Claude Code extension belongs in a plugin. Plugins are best for **self-contained** extensions where all functionality lives within the plugin directory.
+
+**Good fit for a plugin:**
+- Skills, commands, and hooks with no external dependencies
+- Tools that don't need CLI access outside Claude Code
+- Extensions that don't configure `statusLine` or other settings.json keys plugins can't set
+
+**Bad fit for a plugin (keep as install.sh-managed tool):**
+- System utilities that need a CLI binary in `$PATH` (e.g., `~/.local/bin/my-tool`)
+- Tools that configure `statusLine` (plugins can only set the `agent` key in settings.json)
+- Scripts with heavy external state (XDG data dirs, config files) that must survive plugin reinstalls
+- Tools where hooks just call an external binary — the plugin adds indirection without benefit
+
+**The test:** If after converting to a plugin, install.sh still handles most of the setup (copying scripts, configuring settings.json, managing external state), the plugin layer is adding complexity without value.
+
+## Session Restart Required
+
+After installing or reinstalling a plugin, `/reload-plugins` loads the new skills, commands, and hooks. However, **hook errors from the previous load may persist in the session**. If you see stale "hook error" messages after fixing an issue, restart Claude Code — a fresh session clears them.
+
 ## Common Mistakes
 
 | Mistake | Symptom | Fix |
