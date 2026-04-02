@@ -22,7 +22,31 @@ fi
 echo "Installing claude-auto-skills..."
 echo ""
 
-# Register local marketplace, enable the plugin, and strip any old manual hook
+# --- Migrate from pre-plugin install ---
+# Remove old scripts copied to ~/.local/bin
+for script in claude-skill-classifier claude-hook-logger; do
+    target="${HOME}/.local/bin/${script}"
+    if [ -f "$target" ] && ! [ -L "$target" ]; then
+        rm "$target"
+        echo -e "  ${GREEN}removed${NC}    $target (old install)"
+    fi
+done
+
+# Remove old command symlinks from ~/.claude/commands/
+OLD_COMMANDS=(
+    auto-skills-level.md auto-skills-status.md auto-skills-toggle.md
+    code-quality.md critical-thinking.md critical-evaluation.md skill-design.md
+)
+for cmd in "${OLD_COMMANDS[@]}"; do
+    target="${HOME}/.claude/commands/${cmd}"
+    if [ -L "$target" ]; then
+        rm "$target"
+        echo -e "  ${GREEN}removed${NC}    $target (old install)"
+    fi
+done
+echo ""
+
+# --- Register local marketplace, enable the plugin, and strip any old manual hook
 # entries (claude-skill-classifier / claude-hook-logger) that were used before
 # the plugin approach — the plugin's hooks/hooks.json replaces them.
 jq --arg path "$SCRIPT_DIR" '
