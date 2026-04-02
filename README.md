@@ -94,9 +94,15 @@ GROUP_AUTOSKILLS_COLOR="none"  # requires claude-worktime v97e5788+ for "none" s
 STATUSLINE_3="MODEL RATE_5H RATE_7D CONTEXT AUTOSKILLS"
 ```
 
-## Toggling
+## Management commands
 
-Use `/toggle-auto-skills` from within Claude Code to enable or disable the classifier. This edits `CLASSIFIER_ENABLED` in `~/.config/claude-auto-skills/config.sh`. Skills remain available manually via `/code-quality` etc. when the classifier is off.
+| Command | Action |
+|---------|--------|
+| `/auto-skills-toggle` | Enable/disable the classifier |
+| `/auto-skills-level` | Set sensitivity (low/normal/high) |
+| `/auto-skills-status` | Show current config and recent classifier activity |
+
+All commands edit `~/.config/claude-auto-skills/config.sh`. Skills remain manually invokable via `/code-quality` etc. when the classifier is off.
 
 ## Updating
 
