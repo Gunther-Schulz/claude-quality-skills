@@ -33,7 +33,9 @@ CLASSIFIER_SENSITIVITY="normal"  # low, normal, high
 - **normal**: Current behavior
 - **high**: Trigger on anything plausibly matching ("should we use X?", "what do you think about Y?")
 
-Implementation: select a different DO NOT MATCH section (or omit it entirely for high) based on the config value. One-line change in the Python script. Needs test batteries for each level before shipping.
+Implementation: done (c56d3c4). Selects different DO NOT MATCH phrasing per level. All configurable via config.sh.
+
+**Observation from initial testing:** "should we use redis or sqlite?" triggered on normal but returned EMPTY on both high and low. Haiku's behavior is sensitive to DO NOT MATCH phrasing in non-obvious ways — different wording doesn't just change the threshold, it can confuse the model into returning nothing. The low and high prompt variants need tuning with dedicated test batteries before they're reliable.
 
 ## Classifier accuracy: bare category names
 
