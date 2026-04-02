@@ -83,9 +83,13 @@ if [ "$_skills_enabled" = "on" ]; then
 else
     GROUP_AUTOSKILLS="${_gray}auto-skills:off${_reset}"
 fi
-GROUP_AUTOSKILLS_COLOR="none"  # prevent line color from overriding inline colors
+GROUP_AUTOSKILLS_COLOR="none"  # requires claude-worktime v97e5788+ for "none" support
 STATUSLINE_3="MODEL RATE_5H RATE_7D CONTEXT AUTOSKILLS"
 ```
+
+## Toggling
+
+Use `/toggle-auto-skills` from within Claude Code to enable or disable the classifier. This edits `CLASSIFIER_ENABLED` in `~/.config/claude-skills/config.sh`. Skills remain available manually via `/code-quality` etc. when the classifier is off.
 
 ## Updating
 
