@@ -40,14 +40,14 @@ Follows [XDG Base Directory Specification](https://specifications.freedesktop.or
 
 | Artifact | Location | Override env var |
 |----------|----------|------------------|
-| Config | `~/.config/claude-auto-skills/config.sh` | `CLAUDE_SKILLS_CONFIG` |
-| Logs | `~/.local/state/claude-auto-skills/` | `CLAUDE_SKILLS_STATE` |
+| Config | `~/.config/claude-auto-skills/config.sh` | `CLAUDE_AUTO_SKILLS_CONFIG` |
+| Logs | `~/.local/state/claude-auto-skills/` | `CLAUDE_AUTO_SKILLS_STATE` |
 | Scripts | `~/.local/bin/` | — |
 | Commands | `~/.claude/commands/` | — |
 
 ## Configuration
 
-Edit `~/.config/claude-skills/config.sh`:
+Edit `~/.config/claude-auto-skills/config.sh`:
 
 ```bash
 # Enable/disable the classifier (default: true)
@@ -70,7 +70,7 @@ If you use [claude-worktime](https://github.com/Gunther-Schulz/claude-worktime),
 
 ```bash
 # Auto-skills status (grey label, green "on" / grey "off")
-_skills_conf="${CLAUDE_SKILLS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/claude-skills}/config.sh"
+_skills_conf="${CLAUDE_AUTO_SKILLS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/claude-auto-skills}/config.sh"
 _skills_enabled="off"
 if [ -f "$_skills_conf" ]; then
     _skills_enabled="on"
@@ -89,7 +89,7 @@ STATUSLINE_3="MODEL RATE_5H RATE_7D CONTEXT AUTOSKILLS"
 
 ## Toggling
 
-Use `/toggle-auto-skills` from within Claude Code to enable or disable the classifier. This edits `CLASSIFIER_ENABLED` in `~/.config/claude-skills/config.sh`. Skills remain available manually via `/code-quality` etc. when the classifier is off.
+Use `/toggle-auto-skills` from within Claude Code to enable or disable the classifier. This edits `CLASSIFIER_ENABLED` in `~/.config/claude-auto-skills/config.sh`. Skills remain available manually via `/code-quality` etc. when the classifier is off.
 
 ## Updating
 

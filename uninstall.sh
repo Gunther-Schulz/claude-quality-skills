@@ -47,7 +47,7 @@ done
 echo ""
 
 echo "Note: config and state directories are preserved:"
-echo "  Config: ${CLAUDE_SKILLS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/claude-skills}/"
-echo "  State:  ${CLAUDE_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-skills}/"
+echo "  Config: ${CLAUDE_AUTO_SKILLS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/claude-auto-skills}/"
+echo "  State:  ${CLAUDE_AUTO_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-auto-skills}/"
 echo ""
 echo "Note: remove the classifier hook from ~/.claude/settings.json manually."

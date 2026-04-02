@@ -1,6 +1,6 @@
 # claude-auto-skills configuration
-# Installed to: ~/.config/claude-skills/config.sh
-# Override config location with CLAUDE_SKILLS_CONFIG env var
+# Installed to: ~/.config/claude-auto-skills/config.sh
+# Override config location with CLAUDE_AUTO_SKILLS_CONFIG env var
 
 # Enable/disable the classifier (default: true)
 # Skills remain available manually via /code-quality etc. when disabled
@@ -16,5 +16,5 @@
 #CLASSIFIER_MAX_BUDGET=""
 
 # Override state directory (logs)
-# Default: ${XDG_STATE_HOME:-~/.local/state}/claude-skills
-#CLAUDE_SKILLS_STATE=""
+# Default: ${XDG_STATE_HOME:-~/.local/state}/claude-auto-skills
+#CLAUDE_AUTO_SKILLS_STATE=""

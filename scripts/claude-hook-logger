@@ -4,7 +4,7 @@
 [ "${CLAUDE_SKILL_CLASSIFYING:-}" = "1" ] && exit 0
 
 # Paths: env vars > XDG spec > defaults
-STATEDIR="${CLAUDE_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-skills}"
+STATEDIR="${CLAUDE_AUTO_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-auto-skills}"
 mkdir -p "$STATEDIR"
 LOG_FILE="${STATEDIR}/hook-debug.log"
 INPUT=$(cat)

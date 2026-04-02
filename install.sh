@@ -7,8 +7,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BIN_DIR="${HOME}/.local/bin"
 COMMANDS_SRC="${SCRIPT_DIR}/commands"
 COMMANDS_DST="${HOME}/.claude/commands"
-CONFIGDIR="${CLAUDE_SKILLS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/claude-skills}"
-STATEDIR="${CLAUDE_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-skills}"
+CONFIGDIR="${CLAUDE_AUTO_SKILLS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/claude-auto-skills}"
+STATEDIR="${CLAUDE_AUTO_SKILLS_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-auto-skills}"
 
 # Colors
 GREEN='\033[0;32m'
