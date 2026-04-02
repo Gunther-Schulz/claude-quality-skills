@@ -8,13 +8,16 @@ Claude Code follows instructions but doesn't consistently self-check. It can ski
 
 ## Skills
 
-| Command | When to use |
-|---------|-------------|
-| `/code-quality` | Before writing or modifying code — requirements review, consumer analysis, fallback tracing, pattern search |
-| `/critical-thinking` | During investigation, debugging, or analysis — claim verification, backward traces, hypothesis testing |
-| `/critical-evaluation` | When evaluating proposals — challenge assumptions before agreeing |
+| Skill | When to use |
+|-------|-------------|
+| `/auto-skills:code-quality` | Before writing or modifying code — requirements review, consumer analysis, fallback tracing, pattern search |
+| `/auto-skills:critical-thinking` | During investigation, debugging, or analysis — claim verification, backward traces, hypothesis testing |
+| `/auto-skills:critical-evaluation` | When evaluating proposals — challenge assumptions before agreeing |
+| `/auto-skills:skill-design` | When writing or reviewing skills, rules, checklists, or prompt templates |
 
 ## Installation
+
+1. Run the setup script (handles migration from older installs and copies config):
 
 ```bash
 git clone https://github.com/Gunther-Schulz/claude-auto-skills.git
@@ -22,28 +25,36 @@ cd claude-auto-skills
 ./install.sh
 ```
 
-This installs:
-- **Scripts** to `~/.local/bin/` (classifier and debug logger)
-- **Commands** symlinked to `~/.claude/commands/` (slash commands)
-- **Config** to `~/.config/claude-auto-skills/config.sh`
-- **State/logs** to `~/.local/state/claude-auto-skills/`
+2. Inside Claude Code, add the marketplace and install the plugin:
+
+```
+/plugin marketplace add Gunther-Schulz/claude-auto-skills
+/plugin install auto-skills@local
+```
+
+3. Restart Claude Code or run `/reload-plugins`.
+
+### What the plugin provides
+
+- **4 skills** — auto-discovered by Claude based on task context
+- **1 command** — `/auto-skills:auto-skills` for toggling, status, and sensitivity control
+- **2 hooks** — classifier (detects task type per prompt) and debug logger
 
 ### Classifier hook
 
-The classifier hook automatically detects what kind of task a user prompt involves and reminds Claude to run the relevant skill before proceeding. It uses `claude -p` with Haiku for fast, cheap classification on every prompt.
+The classifier hook automatically detects what kind of task a user prompt involves and injects the relevant skill reminder. It uses `claude -p` with Haiku for fast, cheap classification on every prompt.
 
-The installer prints the hook config snippet to add to `hooks.UserPromptSubmit` in `~/.claude/settings.json`. Logs cost, duration, and token counts per classification to `~/.local/state/claude-auto-skills/classifier.log`.
+Logs cost, duration, and token counts per classification to `~/.local/state/claude-auto-skills/classifier.log`.
 
 ## Directory layout
 
-Follows [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/latest/):
+| Artifact | Location |
+|----------|----------|
+| Plugin | `~/.claude/plugins/cache/local/auto-skills/` (managed by Claude Code) |
+| Config | `~/.config/claude-auto-skills/config.sh` |
+| Logs | `~/.local/state/claude-auto-skills/` |
 
-| Artifact | Location | Override env var |
-|----------|----------|------------------|
-| Config | `~/.config/claude-auto-skills/config.sh` | `CLAUDE_AUTO_SKILLS_CONFIG` |
-| Logs | `~/.local/state/claude-auto-skills/` | `CLAUDE_AUTO_SKILLS_STATE` |
-| Scripts | `~/.local/bin/` | — |
-| Commands | `~/.claude/commands/` | — |
+Config and logs follow the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/latest/) and can be overridden with `CLAUDE_AUTO_SKILLS_CONFIG` and `CLAUDE_AUTO_SKILLS_STATE`.
 
 ## Configuration
 
@@ -51,7 +62,7 @@ Edit `~/.config/claude-auto-skills/config.sh`:
 
 ```bash
 # Enable/disable the classifier (default: true)
-# Skills remain available manually via /code-quality etc. when disabled
+# Skills remain available manually via /auto-skills:code-quality etc. when disabled
 CLASSIFIER_ENABLED=true
 
 # Classifier model (default: claude-haiku-4-5-20251001)
@@ -94,47 +105,35 @@ GROUP_AUTOSKILLS_COLOR="none"  # requires claude-worktime v97e5788+ for "none" s
 STATUSLINE_3="MODEL RATE_5H RATE_7D CONTEXT AUTOSKILLS"
 ```
 
-## Management commands
+## Management
+
+Use `/auto-skills:auto-skills` inside Claude Code to toggle, check status, or change sensitivity. You can also pass arguments directly:
 
 | Command | Action |
 |---------|--------|
-| `/auto-skills-toggle` | Enable/disable the classifier |
-| `/auto-skills-level` | Set sensitivity (low/normal/high) |
-| `/auto-skills-status` | Show current config and recent classifier activity |
-
-All commands edit `~/.config/claude-auto-skills/config.sh`. Skills remain manually invokable via `/code-quality` etc. when the classifier is off.
+| `/auto-skills:auto-skills status` | Show current config and recent classifier activity |
+| `/auto-skills:auto-skills toggle` | Enable/disable the classifier |
+| `/auto-skills:auto-skills low` | Set sensitivity to low |
 
 ## Updating
 
-```bash
-cd claude-auto-skills
-git pull
-./install.sh
 ```
-
-Commands update immediately via symlinks. Scripts are re-copied on `./install.sh`.
+/plugin marketplace update local
+/plugin uninstall auto-skills@local
+/plugin install auto-skills@local
+/reload-plugins
+```
 
 ## Uninstalling
 
-```bash
-./uninstall.sh
+```
+/plugin uninstall auto-skills@local
+/plugin marketplace remove local
 ```
 
-Removes scripts and command symlinks. Config and state directories are preserved. Remove the classifier hook from `settings.json` manually.
-
-## Adding to CLAUDE.md (recommended)
-
-Add condensed references to your global `~/.claude/CLAUDE.md` so Claude is aware of the skills even without the classifier hook:
-
-```markdown
-## Critical thinking
-Verify claims, trace before fixing, investigate contradictions. Full rules: `/critical-thinking`
-
-## Code quality
-List requirements before coding, check consumers before modifying interfaces, trace fallbacks, search for patterns. Full rules: `/code-quality`
-
-## Critical evaluation
-Challenge proposals before agreeing — state concerns, alternatives, or unstated assumptions. Full rules: `/critical-evaluation`
+Config and logs are preserved. To remove them:
+```bash
+rm -rf ~/.config/claude-auto-skills ~/.local/state/claude-auto-skills
 ```
 
 ## Effectiveness caveat
