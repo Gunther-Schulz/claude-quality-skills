@@ -1,6 +1,6 @@
 ---
 name: critical-thinking
-description: Apply when the user asks to INVESTIGATE, DEBUG, TRACE, or ANALYZE something — find a bug, understand behavior, research a question, explain code.
+description: This skill should be used when the user asks to "investigate", "debug", "find a bug", "trace the issue", "analyze", "explain how this works", "research", or "understand behavior". Covers investigation, debugging, and analysis tasks.
 version: 1.0.0
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: code-quality
-description: Apply when the user asks to WRITE, EDIT, CREATE, or IMPLEMENT code — new features, bug fixes, refactoring, file creation. Also apply for design constraints or corrections directed at code being written.
+description: This skill should be used when the user asks to "write code", "implement a feature", "fix a bug", "refactor", "create a file", or gives design constraints like "make it configurable" or "extract that into a function". Covers new features, bug fixes, refactoring, and file creation.
 version: 1.0.0
 ---
 

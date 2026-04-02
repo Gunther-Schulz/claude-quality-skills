@@ -1,6 +1,6 @@
 ---
 name: critical-evaluation
-description: Apply when the user asks to EVALUATE, COMPARE, CHOOSE, or DECIDE between options, or asks for an opinion on a design, approach, or tradeoff. Includes "should we use X or Y?", "is X the right choice?", "what do you think about X?".
+description: This skill should be used when the user asks to "evaluate", "compare options", "choose between", "decide", "should we use X or Y?", "is X the right choice?", or "what do you think about X?". Covers design decisions, tradeoffs, and opinion requests.
 version: 1.0.0
 ---
 
