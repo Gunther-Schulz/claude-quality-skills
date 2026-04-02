@@ -4,15 +4,13 @@
 
 The DO NOT MATCH rule "Design DISCUSSIONS" causes Haiku to reject legitimate evaluation questions that don't use explicit keywords like "evaluate" or "right choice."
 
-**Failing (should trigger /critical-evaluation but don't):**
-- "should we use redis?" — too short/vague
-- "should we use redis or sqlite for the cache layer?" — seen as discussion
-- "what do you think about using redis for caching?" — "what do you think" matches discussion pattern
-- "redis vs sqlite for session storage - which is better?" — comparison, not explicit evaluation
+**Previously failing (fixed in cb6527e):**
+- "should we use redis?" — now triggers ✅
+- "should we use redis or sqlite for the cache layer?" — now triggers ✅
+- "what do you think about using redis for caching?" — now triggers ✅
+- "redis vs sqlite for session storage - which is better?" — now triggers ✅
 
-**Passing:**
-- "is redis the right choice for our caching?" — "right choice" signals evaluation
-- "evaluate whether redis fits our architecture" — explicit "evaluate" keyword
+**Fix:** Broadened category to include COMPARE/CHOOSE/DECIDE with explicit examples. Removed "Design DISCUSSIONS" from DO NOT MATCH. Added NOTE clarifying opinion/comparison questions ARE evaluations. 5/5 pass, 6/6 non-matches still rejected.
 
 **Root cause:** The DO NOT MATCH line "Design DISCUSSIONS (talking about how something should work without asking to write code)" is too broad. "Should we use X or Y?" is asking for evaluation, not idle discussion.
 

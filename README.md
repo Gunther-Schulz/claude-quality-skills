@@ -62,6 +62,12 @@ CLASSIFIER_EFFORT="low"
 
 # Max budget per classification call in USD (default: no limit)
 CLASSIFIER_MAX_BUDGET=""
+
+# Sensitivity: low, normal, high (default: normal)
+# low:    Only trigger on explicit action keywords
+# normal: Balanced — skips confirmations, discussions, git ops
+# high:   Trigger on anything plausible
+CLASSIFIER_SENSITIVITY="normal"
 ```
 
 ### claude-worktime statusline integration (optional)
