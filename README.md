@@ -13,7 +13,6 @@ Claude Code follows instructions but doesn't consistently self-check. It can ski
 | `/quality-skills:code-quality` | Before writing or modifying code — requirements review, consumer analysis, fallback tracing, pattern search |
 | `/quality-skills:critical-thinking` | During investigation, debugging, or analysis — claim verification, backward traces, hypothesis testing |
 | `/quality-skills:critical-evaluation` | When evaluating proposals — challenge assumptions before agreeing |
-| `/quality-skills:skill-design` | When writing or reviewing skills, rules, checklists, or prompt templates |
 
 ## Installation
 
@@ -29,7 +28,7 @@ Restart Claude Code or run `/reload-plugins` to activate.
 
 ### What the plugin provides
 
-- **4 skills** — auto-discovered by Claude based on task context
+- **3 skills** — auto-discovered by Claude based on task context
 - **1 command** — `/quality-skills:quality-skills` for management
 
 Skills are loaded automatically by Claude Code's built-in auto-discovery when the task matches the skill description. No hooks or external classifier needed.
@@ -66,8 +65,7 @@ plugin/
 └── skills/
     ├── code-quality/SKILL.md
     ├── critical-thinking/SKILL.md
-    ├── critical-evaluation/SKILL.md
-    └── skill-design/SKILL.md
+    └── critical-evaluation/SKILL.md
 ```
 
 After editing, push to GitHub and update:
